@@ -1,5 +1,5 @@
 
-
+# requires ggplot
 
 
 plotfactor <- function(i, mydata, r1){
