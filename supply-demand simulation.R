@@ -6,6 +6,10 @@ rm(list=ls())
 initial_value <- 100
 years <- 0:10
 num_plots <- 10  # Number of scenarios to generate
+
+# number of simulations to run
+nsim<-20
+
 mean_growth_rate <- 0.02
 sd_growth_rate <- 0.05
 
@@ -17,7 +21,6 @@ sp<-runif(num_plots)
 sprob<-sp/sum(sp)
 
 
-nsim<-100
 
 demand_probs<-c(0.25,0.15,0.6)
 supply_probs<-c(0.8,0.15,0.5)
@@ -142,20 +145,30 @@ sscen<-sample(1:num_plots,size = nsim,replace=TRUE,prob = sprob)
 # construct the supply and denand curves under that scenario adn comput the gaps
 
 gy10<-0
-
-# i<-1
+simoutput<-NULL
+# next step: comp
+ # i<-1
 for (i in 1:nsim){
+  
 datascen<-as.data.frame(cbind(years,data$d.nurses[data$group==dscen[i]],data$nsupply[data$group==sscen[i]]))
 colnames(datascen)<-c("years","demand","supply")
 datascen$gap<-datascen$demand-datascen$supply
+datascen$simulation.number<-i
+
+simoutput<-rbind(simoutput,datascen)
 # gap at year 10
-# print(datascen)
 gy10[i]<-datascen$gap[datascen$years==10]
 }
 # barplot(table(round(gy10)))
 
 hist(gy10,20
-     ,main = paste0("Gap after 10 years over ", num_plots, " simulations")
+     ,main = paste0("Gap after 10 years over ", nsim, " simulations")
      # ,main = paste0('attrit = ', round(att_rates,2), '; demand = ', round(growth_rates,2))
 )
+
+write.csv(simoutput,"mysim.csv")
+
+
+
+
 
